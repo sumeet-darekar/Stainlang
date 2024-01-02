@@ -1,7 +1,7 @@
 class Lexer:
 
     stopper = [" "]
-    operator = "+-*/"
+    operator = "+-*/()"
     def __init__(self,line):
         self.line=line
         self.counter=0

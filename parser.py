@@ -7,6 +7,10 @@ class Parser:
     def factor(self):
         if self.token.dataType == "INT" or self.token.dataType == "FLOAT":
             return self.token
+        elif self.token.value == "(":
+            self.move()
+            expression = self.expression()
+            return expression
 
     def term(self):
         leftNode = self.factor()
