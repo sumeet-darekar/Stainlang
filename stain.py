@@ -7,11 +7,11 @@ while True:
     text = input("stainLang>> ")
     tokenizer = Lexer(text)
     tokens = tokenizer.tokenization()
-   
+    print(tokens)
     parser = Parser(tokens)
     tree = parser.parse()
-    
-    interpreter = Interpreter(tree)
-    output = interpreter.interpret()
-
-    print(output)
+    print(tree) 
+  #  interpreter = Interpreter(tree)
+  #  output = interpreter.interpret()
+#
+  #  print(output)

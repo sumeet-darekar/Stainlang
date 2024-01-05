@@ -1,7 +1,10 @@
 class Lexer:
 
     stopper = [" "]
-    operator = "+-*/()"
+    operator = "+-*/()="
+    letters = "abcdefghijklmnopqrstuvwxyz"
+    keywords = ["set"] 
+
     def __init__(self,line):
         self.line=line
         self.counter=0
@@ -13,12 +16,23 @@ class Lexer:
             if self.currChar.isdigit() :
                 self.wholeDigit=self.extract()
                 self.tokens.append(self.wholeDigit)
+
             elif self.currChar in Lexer.operator:
                 self.operant=Operator(self.currChar)
                 self.tokens.append(self.operant)
                 self.move()
+
+            elif self.currChar in Lexer.letters:
+                wholeString = self.extract_string()
+                if wholeString in Lexer.keywords:
+                    token = Declaration(wholeString)
+                else:
+                    token = Variable(wholeString)
+                self.tokens.append(token)
+
             elif self.currChar in Lexer.stopper:
                 self.move()
+                
             else:
                 self.move()
         return self.tokens
@@ -38,6 +52,13 @@ class Lexer:
                 break
         return Integer(wholeDigit) if not isFloat else Float(wholeDigit)
    
+    def extract_string(self):
+        word=""
+        while self.currChar in Lexer.letters and self.counter < len(self.line):
+            word += self.currChar
+
+            self.move()
+        return word
 
     def move(self):
         self.counter+=1
@@ -59,6 +80,15 @@ class Integer(Token):
 class Float(Token):
     def __init__(self,value):
         super().__init__("FLOAT",value)
+
 class Operator(Token):
     def __init__(self,value):
         super().__init__("OP",value)
+
+class Declaration(Token):
+    def __init__(self,value):
+        super().__init__("DEL",value)
+
+class Variable(Token):
+    def __init__(self,value):
+        super().__init__("VAR",value)

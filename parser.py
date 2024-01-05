@@ -35,9 +35,28 @@ class Parser:
             leftNode = [leftNode, operator, rightNode]
         return leftNode
 
+    def variable(self):
+        if self.token.dataType == "VAR":
+            return self.token
+
+    def statement(self):
+        if self.token.dataType == "DEL":
+            self.move()
+            leftNode = self.variable()
+            self.move()
+            if self.token.value == "=":
+                operation = self.token
+                self.move()
+                rightNode = self.expression()
+
+                return [leftNode, operation, rightNode]
+
+
+        elif self.token.dataType == "INT" or self.token.dataType == "FLOAT" or self.token.dataType == "OP":
+            return self.expression()
 
     def parse(self):
-        return self.expression()
+        return self.statement()
 
     def move(self):
         self.counter += 1
