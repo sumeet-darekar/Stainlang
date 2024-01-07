@@ -32,7 +32,7 @@ class Lexer:
 
             elif self.currChar in Lexer.stopper:
                 self.move()
-                
+
             else:
                 self.move()
         return self.tokens
@@ -91,4 +91,4 @@ class Declaration(Token):
 
 class Variable(Token):
     def __init__(self,value):
-        super().__init__("VAR",value)
+        super().__init__("VAR(?)",value)

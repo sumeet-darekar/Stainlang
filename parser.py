@@ -11,6 +11,8 @@ class Parser:
             self.move()
             expression = self.expression()
             return expression
+        elif self.token.dataType.startswith("VAR"):
+            return self.token
 
     def term(self):
         leftNode = self.factor()
@@ -36,7 +38,7 @@ class Parser:
         return leftNode
 
     def variable(self):
-        if self.token.dataType == "VAR":
+        if self.token.dataType.startswith("VAR"):
             return self.token
 
     def statement(self):
