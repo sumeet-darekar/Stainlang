@@ -1,9 +1,11 @@
+import os
 class Lexer:
 
     stopper = [" "]
     operator = "+-*/()="
     letters = "abcdefghijklmnopqrstuvwxyz"
-    keywords = ["set"] 
+    keywords = ["set","clear"] 
+
 
     def __init__(self,line):
         self.line=line
@@ -24,7 +26,10 @@ class Lexer:
 
             elif self.currChar in Lexer.letters:
                 wholeString = self.extract_string()
+
                 if wholeString in Lexer.keywords:
+                    if wholeString == "clear":
+                        os.system('cls')
                     token = Declaration(wholeString)
                 else:
                     token = Variable(wholeString)
@@ -92,3 +97,4 @@ class Declaration(Token):
 class Variable(Token):
     def __init__(self,value):
         super().__init__("VAR(?)",value)
+

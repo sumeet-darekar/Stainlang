@@ -1,3 +1,4 @@
+
 class Parser:
     def __init__(self,tokens):
         self.tokens=tokens
@@ -52,7 +53,6 @@ class Parser:
                 rightNode = self.expression()
 
                 return [leftNode, operation, rightNode]
-
 
         elif self.token.dataType == "INT" or self.token.dataType == "FLOAT" or self.token.dataType == "OP":
             return self.expression()

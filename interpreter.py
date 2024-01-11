@@ -18,6 +18,10 @@ class Interpreter:
         return getattr(self, f"read{variableType}")(variable.value)
 
     def computeBin(self, left, operator, right):
+        if left is None or right is None:
+            print("Invalid expression. One or more operands are missing.")
+            return None
+
         left_type = "VAR" if str(left.dataType).startswith("VAR") else str(left.dataType)
         right_type = "VAR" if str(right.dataType).startswith("VAR") else str(right.dataType)
 
@@ -45,15 +49,15 @@ class Interpreter:
         if tree is None:
             tree = self.tree
 
-        leftNode = tree[0]
+        leftNode = tree[0] if tree and len(tree) > 0 else None
         if isinstance(leftNode, list):
             leftNode = self.interpret(leftNode)
         
-        rightNode = tree[2] 
+        rightNode = tree[2] if tree and len(tree) > 1 else None
         if isinstance(rightNode, list):
             rightNode = self.interpret(rightNode)
 
-        operator = tree[1]
+        operator = tree[1] if tree and len(tree) > 2 else None
 
         return self.computeBin(leftNode, operator, rightNode)
 
