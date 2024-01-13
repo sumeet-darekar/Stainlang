@@ -1,10 +1,11 @@
 import os
+import sys
 class Lexer:
 
     stopper = [" "]
-    operator = "+-*/()="
+    operator = "!+-*/()="
     letters = "abcdefghijklmnopqrstuvwxyz"
-    keywords = ["set","clear"] 
+    keywords = ["set","clear","exit"] 
 
 
     def __init__(self,line):
@@ -29,10 +30,17 @@ class Lexer:
 
                 if wholeString in Lexer.keywords:
                     if wholeString == "clear":
+                        print("Clearning")
                         os.system('cls')
+                        return ["clear"]
+                    if wholeString == "exit":
+                        print("exiting the program")
+                        sys.exit()
+                        return ["exit"]
                     token = Declaration(wholeString)
                 else:
                     token = Variable(wholeString)
+
                 self.tokens.append(token)
 
             elif self.currChar in Lexer.stopper:
@@ -40,6 +48,7 @@ class Lexer:
 
             else:
                 self.move()
+
         return self.tokens
 
     def extract(self):
@@ -69,6 +78,8 @@ class Lexer:
         self.counter+=1
         if self.counter < len(self.line):
             self.currChar=self.line[self.counter]
+
+
 class Token:
     def __init__(self,dataType,value):
         self.dataType=dataType

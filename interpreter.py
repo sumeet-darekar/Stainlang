@@ -18,10 +18,6 @@ class Interpreter:
         return getattr(self, f"read{variableType}")(variable.value)
 
     def computeBin(self, left, operator, right):
-        if left is None or right is None:
-            print("Invalid expression. One or more operands are missing.")
-            return None
-
         left_type = "VAR" if str(left.dataType).startswith("VAR") else str(left.dataType)
         right_type = "VAR" if str(right.dataType).startswith("VAR") else str(right.dataType)
 
@@ -44,20 +40,37 @@ class Interpreter:
         
         return Integer(output) if (left_type == "INT" and right_type == "INT") else Float(output) 
 
+    def computeUnary(self,operator,operand):
+        operand_type = "VAR" if str(operand.dataType).startswith("VAR") else str(operand.dataType)
+        operand = getattr(self, f"read{operand_type}")(operand.value)
+        if operator.value == "+":
+            return +operand
+        elif operator.value == "-":
+            return -operand
+        elif operator.value == "!":
+            return operand
+
     def interpret(self,tree=None):
 
         if tree is None:
             tree = self.tree
 
-        leftNode = tree[0] if tree and len(tree) > 0 else None
-        if isinstance(leftNode, list):
-            leftNode = self.interpret(leftNode)
-        
-        rightNode = tree[2] if tree and len(tree) > 1 else None
-        if isinstance(rightNode, list):
-            rightNode = self.interpret(rightNode)
+        if isinstance(tree, list) and len(tree) == 2 :
+            return self.computeUnary(tree[0],tree[1])
 
-        operator = tree[1] if tree and len(tree) > 2 else None
+        elif not isinstance(tree,list):
+            return tree
 
-        return self.computeBin(leftNode, operator, rightNode)
+        else:
+            leftNode = tree[0] if tree and len(tree) > 0 else None
+            if isinstance(leftNode, list):
+                leftNode = self.interpret(leftNode)
+            
+            rightNode = tree[2] if tree and len(tree) > 1 else None
+            if isinstance(rightNode, list):
+                rightNode = self.interpret(rightNode)
+    
+            operator = tree[1] if tree and len(tree) > 2 else None
+
+            return self.computeBin(leftNode, operator, rightNode)
 

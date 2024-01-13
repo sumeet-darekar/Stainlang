@@ -1,4 +1,7 @@
 
+from lexer import Operator
+
+
 class Parser:
     def __init__(self,tokens):
         self.tokens=tokens
@@ -14,6 +17,11 @@ class Parser:
             return expression
         elif self.token.dataType.startswith("VAR"):
             return self.token
+        elif self.token.value == "+" or self.token.value == "-" or self.token.value=="!":
+            operator = self.token
+            self.move()
+            operand = self.expression()
+            return [operator,operand]
 
     def term(self):
         leftNode = self.factor()

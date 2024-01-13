@@ -23,7 +23,12 @@ while True:
     tokenizer = Lexer(text)
     tokens = tokenizer.tokenization()
 
-    #print(tokens)
+    if(tokens[0]=="clear" or tokens[0] == "exit"):
+      text=""
+      continue;
+
+
+    #print("Loop:",tokens)
     parser = Parser(tokens)
     tree = parser.parse()
     #print(tree)
