@@ -37,7 +37,24 @@ class Interpreter:
             output = left * right
         elif operator.value == "/":
             output = left / right
-        
+        elif operator.value == ">":
+            output = True if left > right else False
+        elif operator.value == "<":
+            output = True if left < right else False
+        elif operator.value == ">=":
+            output = True if left >= right else False
+        elif operator.value == "<=":
+            output = True if left <= right else False
+        elif operator.value == "?=":
+            output = True if left == right else False
+        elif operator.value == "and":
+            output = True if left and right else False
+        elif operator.value == "or":
+            output = True if left or right else False
+        elif operator.value == "??=":
+            output = True if left != right else False
+
+
         return Integer(output) if (left_type == "INT" and right_type == "INT") else Float(output) 
 
     def computeUnary(self,operator,operand):
@@ -49,6 +66,8 @@ class Interpreter:
             return -operand
         elif operator.value == "!":
             return operand
+        elif operand.value == "not":
+            return True if not operand else False
 
     def interpret(self,tree=None):
 
@@ -56,7 +75,10 @@ class Interpreter:
             tree = self.tree
 
         if isinstance(tree, list) and len(tree) == 2 :
-            return self.computeUnary(tree[0],tree[1])
+            expression = tree[1]
+            if isinstance(expression, list):
+                expression = self.interpret(expression)
+            return self.computeUnary(tree[0],expression)
 
         elif not isinstance(tree,list):
             return tree

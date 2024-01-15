@@ -5,8 +5,10 @@ class Lexer:
     stopper = [" "]
     operator = "!+-*/()="
     letters = "abcdefghijklmnopqrstuvwxyz"
-    keywords = ["set","clear","exit"] 
-
+    keywords = ["set","clear","exit"]
+    booleanOperator = ["and","or","not"] 
+    comparisonOperator = ["<",">","<=",">=","?="]
+    comparisonWords = "><?="
 
     def __init__(self,line):
         self.line=line
@@ -38,9 +40,18 @@ class Lexer:
                         sys.exit()
                         return ["exit"]
                     token = Declaration(wholeString)
+                elif wholeString == "and" or wholeString == "or" or wholeString == "not":
+                    token = BooleanOperator(wholeString)
                 else:
                     token = Variable(wholeString)
 
+                self.tokens.append(token)
+            elif self.currChar in Lexer.comparisonWords:
+                operator = ""
+                while self.currChar in Lexer.comparisonWords and self.counter < len(self.line):
+                    operator += self.currChar
+                    self.move()
+                token = ComparisonOperator(operator)
                 self.tokens.append(token)
 
             elif self.currChar in Lexer.stopper:
@@ -109,3 +120,10 @@ class Variable(Token):
     def __init__(self,value):
         super().__init__("VAR(?)",value)
 
+class BooleanOperator(Token):
+    def __init__(self,value):
+        super().__init__("BOOL",value)
+
+class ComparisonOperator(Token):
+    def __init__(self,value):
+        super().__init__("COMP",value)

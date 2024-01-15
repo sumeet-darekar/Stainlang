@@ -13,14 +13,18 @@ class Parser:
             return self.token
         elif self.token.value == "(":
             self.move()
-            expression = self.expression()
+            expression = self.boolean_expr()
             return expression
         elif self.token.dataType.startswith("VAR"):
             return self.token
+        elif self.token.value == "not":
+            operator = self.token
+            self.move()
+            return [operator, self.boolean_expr()]
         elif self.token.value == "+" or self.token.value == "-" or self.token.value=="!":
             operator = self.token
             self.move()
-            operand = self.expression()
+            operand = self.boolean_expr()
             return [operator,operand]
 
     def term(self):
@@ -34,7 +38,30 @@ class Parser:
             self.move()
             leftNode = [leftNode, operator, rightNode]
         return leftNode
-    
+
+    def comparison_expr(self):
+        leftNode = self.expression()
+        
+        while self.token.dataType == "COMP":
+            operator = self.token
+            self.move()
+            rightNode = self.expression()
+        
+            leftNode = [leftNode, operator, rightNode]
+        return leftNode
+
+    def boolean_expr(self):
+        leftNode = self.comparison_expr()
+
+        while self.token.value == "and" or self.token.value == "or":
+            operator = self.token
+            self.move()
+            rightNode = self.comparison_expr()
+        
+            leftNode = [leftNode, operator, rightNode]
+        return leftNode
+
+
     def expression(self):
         leftNode = self.term()
         
@@ -58,12 +85,12 @@ class Parser:
             if self.token.value == "=":
                 operation = self.token
                 self.move()
-                rightNode = self.expression()
+                rightNode = self.boolean_expr()
 
                 return [leftNode, operation, rightNode]
 
-        elif self.token.dataType == "INT" or self.token.dataType == "FLOAT" or self.token.dataType == "OP":
-            return self.expression()
+        elif self.token.dataType == "INT" or self.token.dataType == "FLOAT" or self.token.dataType == "OP" or self.token.dataType == "not":
+            return self.boolean_expr()
 
     def parse(self):
         return self.statement()
